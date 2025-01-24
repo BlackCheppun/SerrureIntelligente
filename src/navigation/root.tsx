@@ -11,10 +11,15 @@ export default function Root() {
 
     return (
         <NavigationContainer>
-            <rootStack.Navigator>
+            <rootStack.Navigator
+                screenOptions={
+                    {
+                        headerShown: false
+                    }}
+            >
                 <rootStack.Screen name="Home" component={Home} />
                 <rootStack.Screen name="lockdetails" component={LockDetails} />
             </rootStack.Navigator>
-        </NavigationContainer>
+        </NavigationContainer >
     )
 }
