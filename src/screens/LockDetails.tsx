@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, useColorScheme } from 'react-native';
-import { Icon } from 'react-native-vector-icons/Icon';
 import LockCard from '../components/lockCard';
 import { darkTheme, lightTheme } from '../types/themes';
 
@@ -10,7 +9,7 @@ const LockDetails: React.FC = () => {
 
     return (
         <View style={[{ backgroundColor: theme.background, flex: 1 }, styles.container]} >
-            <Text style={[styles.Title]}>Bonjour</Text>
+            <Text style={[styles.Title, { color: theme.fontcolor }]}>Serrure label</Text>
 
             <Pressable style={styles.StateButton}>
                 <LockCard label="Etat de la serrure" isrefresh />
