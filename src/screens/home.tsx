@@ -1,6 +1,7 @@
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { ParamListBase, NavigationProp } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
+import { darkTheme, lightTheme } from "../types/themes";
 
 interface props {
     navigation: NavigationProp<ParamListBase>;
@@ -14,27 +15,31 @@ const data = [
 
 
 export default function Home({ navigation }: props) {
+    const theme = useColorScheme() == 'dark' ? darkTheme : lightTheme;
+
+
+
     return (
 
-        <>
+        <View style={{ flex: 1, backgroundColor: theme.background }} >
             <View style={styles.TopContainer}>
-                <Text style={styles.Title}>Bonjour</Text>
+                <Text style={[styles.Title, { color: theme.fontcolor }]}>Bonjour</Text>
                 <Pressable>
-                    <Icon name="add" size={32} style={{ fontWeight: 800 }} />
+                    <Icon name="add" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                 </Pressable>
-            </View>
+            </View >
             <View>
                 {
                     data.map((item, index) => {
                         return (
-                            <Pressable style={styles.LockContainer} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item.lockID })}>
-                                <Text>{item.lockName}</Text>
-                                <Icon name="chevron-forward" size={32} style={{ fontWeight: 800 }} />
+                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item.lockID })}>
+                                <Text style={{ color: theme.fontcolor }}>{item.lockName}</Text>
+                                <Icon name="chevron-forward" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                             </Pressable>
                         )
                     })}
             </View>
-        </>
+        </View>
     )
 }
 
