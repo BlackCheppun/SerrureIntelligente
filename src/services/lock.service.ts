@@ -37,7 +37,7 @@ export class lockService {
         }
     }
 
-static async getLocks() {
+    static async getLocks() {
         try {
             const user_id = await mmkv.getStringAsync("user_id");
             const response = await axiosClient.get("/locks", {
