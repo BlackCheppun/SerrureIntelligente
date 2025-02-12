@@ -1,13 +1,22 @@
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import React from "react"
+import React, { useEffect } from "react"
 import LockDetails from "../screens/LockDetails";
 import Home from "../screens/home";
+import { lockService } from "../services/lock.service";
 
 
 const rootStack = createNativeStackNavigator();
 
 export default function Root() {
+
+
+    useEffect(() => {
+        const regUser = async () => {
+            await lockService.addidOnfirstime();
+        }
+        regUser();
+    }, []);
 
     return (
         <NavigationContainer>
