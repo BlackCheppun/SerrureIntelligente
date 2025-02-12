@@ -5,6 +5,24 @@ import { MMKVLoader } from "react-native-mmkv-storage";
 const mmkv = new MMKVLoader().initialize();
 
 export class lockService {
+    static async addidOnfirstime() {
+        try {
+
+            const firsttime = await mmkv.getStringAsync("firsttime");
+            if (firsttime == null) {
+                const user_id = await this.registerUser();
+                mmkv.setStringAsync("firsttime", "false");
+                mmkv.setStringAsync("user_id", user_id);
+                return user_id;
+            }
+            else {
+                const user_id = await mmkv.getStringAsync("user_id");
+                return user_id;
+            }
+        } catch (error) {
+            console.log(error); // Handle error
+        }
+    }
 
     static async registerUser() {
         try {
