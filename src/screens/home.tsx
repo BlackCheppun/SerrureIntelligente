@@ -2,21 +2,30 @@ import { Button, Pressable, StyleSheet, Text, useColorScheme, View } from "react
 import { ParamListBase, NavigationProp } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons";
 import { darkTheme, lightTheme } from "../types/themes";
+import { lockService } from "../services/lock.service";
+import { Key, useEffect, useState } from "react";
 
 interface props {
     navigation: NavigationProp<ParamListBase>;
 }
 
-const data = [
-    { lockID: "1", lockName: "Lock 1" },
-    { lockID: "2", lockName: "Lock 2" },
-    { lockID: "3", lockName: "Lock 3" },
-];
-
-
 export default function Home({ navigation }: props) {
     const theme = useColorScheme() == 'dark' ? darkTheme : lightTheme;
 
+    const [locks, setlocks] = useState<string[]>([]);
+
+    useEffect(() => {
+        const fetchlocks = async () => {
+            const data = await lockService.getLocks();
+            if (data) {
+                setlocks(data);
+            }
+        };
+        fetchlocks();
+    }, []);
+
+
+    console.log(locks);
 
 
     return (
@@ -30,10 +39,10 @@ export default function Home({ navigation }: props) {
             </View >
             <View>
                 {
-                    data.map((item, index) => {
+                    locks.map((item: string, index: Key | null | undefined) => {
                         return (
-                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item.lockID })}>
-                                <Text style={{ color: theme.fontcolor }}>{item.lockName}</Text>
+                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item })}>
+                                <Text style={{ color: theme.fontcolor }}>{item}</Text>
                                 <Icon name="chevron-forward" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                             </Pressable>
                         )
