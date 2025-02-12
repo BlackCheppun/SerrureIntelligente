@@ -41,7 +41,7 @@ export default function Home({ navigation }: props) {
                 {
                     locks.map((item: string[], index: Key | null | undefined) => {
                         return (
-                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item[0] })}>
+                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item[0], lockLabel: item[1] })}>
                                 <Text style={{ color: theme.fontcolor }}>{item[1]}</Text>
                                 <Icon name="chevron-forward" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                             </Pressable>
