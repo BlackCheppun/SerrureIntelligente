@@ -45,7 +45,7 @@ export class lockService {
                     userid: user_id
                 }
             });
-            return response.data.locks as string[];
+            return response.data.locks as string[][];
         } catch (error) {
             console.log(error); // Handle error
             return [];
