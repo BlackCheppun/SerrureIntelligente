@@ -12,7 +12,7 @@ interface props {
 export default function Home({ navigation }: props) {
     const theme = useColorScheme() == 'dark' ? darkTheme : lightTheme;
 
-    const [locks, setlocks] = useState<string[]>([]);
+    const [locks, setlocks] = useState<string[][]>([[]]);
 
     useEffect(() => {
         const fetchlocks = async () => {
@@ -39,10 +39,10 @@ export default function Home({ navigation }: props) {
             </View >
             <View>
                 {
-                    locks.map((item: string, index: Key | null | undefined) => {
+                    locks.map((item: string[], index: Key | null | undefined) => {
                         return (
-                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item })}>
-                                <Text style={{ color: theme.fontcolor }}>{item}</Text>
+                            <Pressable style={[styles.LockContainer, { borderColor: theme.fontcolor }]} key={index} onPress={() => navigation.navigate('lockdetails', { lockID: item[0] })}>
+                                <Text style={{ color: theme.fontcolor }}>{item[1]}</Text>
                                 <Icon name="chevron-forward" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                             </Pressable>
                         )
