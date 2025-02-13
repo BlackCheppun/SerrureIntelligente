@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { darkTheme, lightTheme } from "../types/themes";
 import { lockService } from "../services/lock.service";
 import { Key, useEffect, useState } from "react";
+import AddLockModal from "../components/AddLockModal";
 
 interface props {
     navigation: NavigationProp<ParamListBase>;
@@ -25,15 +26,19 @@ export default function Home({ navigation }: props) {
     }, []);
 
 
-    console.log(locks);
+    const [identifier, setIdentifier] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [label, setLabel] = useState<string>('');
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
 
     return (
 
         <View style={{ flex: 1, backgroundColor: theme.background }} >
+            <AddLockModal visible={modalVisible} onClose={() => { setModalVisible(false) }} identifier={identifier} label={label} password={password} setIdentifier={(text) => setIdentifier(text)} setLabel={(text) => setLabel(text)} setPassword={(text) => setPassword(text)} />
             <View style={styles.TopContainer}>
                 <Text style={[styles.Title, { color: theme.fontcolor }]}>Bonjour</Text>
-                <Pressable>
+                <Pressable onPress={() => setModalVisible(true)}>
                     <Icon name="add" size={32} style={{ fontWeight: 800, color: theme.fontcolor }} />
                 </Pressable>
             </View >
