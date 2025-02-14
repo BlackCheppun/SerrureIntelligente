@@ -6,6 +6,7 @@ import { lockService } from "../services/lock.service";
 import { Key, useEffect, useState } from "react";
 import AddLockModal from "../components/AddLockModal";
 import WarningModal from "../components/Warningmodal";
+import Loader from "../components/Loader";
 
 interface props {
     navigation: NavigationProp<ParamListBase>;
@@ -17,13 +18,21 @@ export default function Home({ navigation }: props) {
     const [locks, setlocks] = useState<string[][]>([[]]);
 
     useEffect(() => {
-        const fetchlocks = async () => {
-            const data = await lockService.getLocks();
-            if (data) {
-                setlocks(data);
-            }
-        };
-        fetchlocks();
+        try {
+            setLoading(true);
+            const fetchlocks = async () => {
+                const data = await lockService.getLocks();
+                if (data) {
+                    setlocks(data);
+                }
+            };
+            fetchlocks();
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+        }
     }, []);
 
 
@@ -35,16 +44,26 @@ export default function Home({ navigation }: props) {
     const [warningVisible, setWarningVisible] = useState<boolean>(false);
     const [warningLabel, setWarningLabel] = useState<string>('');
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const addlock = async () => {
-        if (identifier == '' || password == '' || label == '') {
-            setWarningLabel('Veuillez remplir tous les champs');
-            setWarningVisible(true);
-        }
-        else {
-            const res = await lockService.addLock(identifier, password, label);
-            if (res) {
-                setModalVisible(false);
+        try {
+            setLoading(true);
+            if (identifier == '' || password == '' || label == '') {
+                setWarningLabel('Veuillez remplir tous les champs');
+                setWarningVisible(true);
             }
+            else {
+                const res = await lockService.addLock(identifier, password, label);
+                if (res) {
+                    setModalVisible(false);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -52,6 +71,7 @@ export default function Home({ navigation }: props) {
     return (
 
         <View style={{ flex: 1, backgroundColor: theme.background }} >
+            <Loader loading={loading} />
             <AddLockModal setVisible={(val) => setModalVisible(val)} visible={modalVisible} onClose={() => { addlock() }} identifier={identifier} label={label} password={password} setIdentifier={(text) => setIdentifier(text)} setLabel={(text) => setLabel(text)} setPassword={(text) => setPassword(text)} />
             <WarningModal label={warningLabel} visible={warningVisible} onClose={() => setWarningVisible(false)} />
             <View style={styles.TopContainer}>
