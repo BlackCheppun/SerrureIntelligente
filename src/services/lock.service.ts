@@ -55,13 +55,16 @@ export class lockService {
     static async addLock(identifier: string, password: string, label: string) {
         try {
             const user_id = await mmkv.getStringAsync("user_id");
-            const response = await axiosClient.post("/addlock", {
-                userid: user_id,
-                lockid: identifier,
-                password: password,
-                label: label
+            const response = await axiosClient.post("/addlock", null, {
+                params: {
+                    userid: user_id,
+                    lockid: identifier,
+                    password: password,
+                    label: label
+                }
             });
             if (response.status == 200) {
+                await this.getLocks();
                 return true;
             }
             else {
