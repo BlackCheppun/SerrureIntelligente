@@ -55,13 +55,16 @@ export class lockService {
     static async addLock(identifier: string, password: string, label: string) {
         try {
             const user_id = await mmkv.getStringAsync("user_id");
-            const response = await axiosClient.post("/addlock", {
-                userid: user_id,
-                lockid: identifier,
-                password: password,
-                label: label
+            const response = await axiosClient.post("/addlock", null, {
+                params: {
+                    userid: user_id,
+                    lockid: identifier,
+                    password: password,
+                    label: label
+                }
             });
             if (response.status == 200) {
+                await this.getLocks();
                 return true;
             }
             else {
@@ -70,7 +73,68 @@ export class lockService {
         } catch (error) {
             console.log(error); // Handle error
         }
+    }
 
+    static async lockState(lockid: string) {
+        try {
+            const user_id = await mmkv.getStringAsync("user_id");
+            const res = await axiosClient.get("/LockState", {
+                params: {
+                    userid: user_id,
+                    lockid: lockid
+                }
+            });
+            if (res.status == 200) {
+                console.log(res.data.state);
+                return res.data.state;
+            }
+            else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error); // Handle error
+        }
+    }
+
+    static async openLock(lockid: string) {
+        try {
+            const user_id = await mmkv.getStringAsync("user_id");
+            const res = await axiosClient.get("/OpenLock", {
+                params: {
+                    userid: user_id,
+                    lockid: lockid
+                }
+            });
+            if (res.status == 200) {
+                return res.data.state;
+            }
+            else {
+                throw Error("status invalid");
+
+            }
+        } catch (error) {
+            console.log(error); // Handle error
+        }
+    }
+
+    static async closeLock(lockid: string) {
+        try {
+            const user_id = await mmkv.getStringAsync("user_id");
+            const res = await axiosClient.get("/CloseLock", {
+                params: {
+                    userid: user_id,
+                    lockid: lockid
+                }
+            });
+            if (res.status == 200) {
+                return res.data.state;
+            }
+            else {
+                throw new Error("status invalid");
+            }
+        } catch (error) {
+            console.log(error); // Handle error
+        }
     }
 
 }

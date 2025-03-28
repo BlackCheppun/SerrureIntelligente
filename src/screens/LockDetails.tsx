@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, useColorScheme } from 'react-native';
 import LockCard from '../components/lockCard';
 import { darkTheme, lightTheme } from '../types/themes';
 import { RouteProp, useNavigation } from '@react-navigation/native';
+import Loader from '../components/Loader';
+import { lockService } from '../services/lock.service';
 
 type LockDetailsRouteParams = {
     lockID: string;
@@ -19,26 +21,82 @@ const LockDetails: React.FC<LockDetailsProps> = ({ route }) => {
 
     const theme = useColorScheme() == 'dark' ? darkTheme : lightTheme;
 
+    const [lockstate, setlockState] = useState<string | undefined>();
+
+    const [loading, setLoading] = React.useState<boolean>(false);
+
+    useEffect(() => {
+        getlockState()
+
+    }, []);
+
+
+    const getlockState = async () => {
+        try {
+            setLoading(true);
+            const state = await lockService.lockState(lockID);
+            setlockState(state);
+
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+    const openlock = async () => {
+        try {
+            setLoading(true);
+            const st = await lockService.openLock(lockID);
+            setlockState(st);
+
+
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+    const Closelock = async () => {
+        try {
+            setLoading(true);
+            const state = await lockService.closeLock(lockID);
+            setlockState(state);
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+
     return (
-        <View style={[{ backgroundColor: theme.background, flex: 1 }, styles.container]} >
-            <Text style={[styles.Title, { color: theme.fontcolor }]}>{lockLabel}</Text>
+        <>
+            <Loader loading={loading} />
+            <View style={[{ backgroundColor: theme.background, flex: 1 }, styles.container]} >
+                <Text style={[styles.Title, { color: theme.fontcolor }]}>{lockLabel}</Text>
 
-            <Pressable style={styles.StateButton}>
-                <LockCard label="Etat de la serrure" isrefresh />
-            </Pressable>
-
-            <View style={styles.ActionContainer}>
-                <Pressable style={{ flex: 1 }} onPress={() => console.log(lockID)}>
-                    <LockCard label="Ouvrir la serrure" />
+                <Pressable style={styles.StateButton} onPress={() => getlockState()}>
+                    <LockCard label="Etat de la serrure" isrefresh={lockstate} />
                 </Pressable>
-                <Pressable style={{ flex: 1 }}>
-                    <LockCard label="Fermer la serrure" />
-                </Pressable>
-            </View>
 
-        </View >
+                <View style={styles.ActionContainer}>
+                    <Pressable style={{ flex: 1 }} onPress={() => openlock()}>
+                        <LockCard label="Ouvrir la serrure" />
+                    </Pressable>
+                    <Pressable style={{ flex: 1 }} onPress={() => Closelock()}>
+                        <LockCard label="Fermer la serrure" />
+                    </Pressable>
+                </View>
+            </View >
+        </>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

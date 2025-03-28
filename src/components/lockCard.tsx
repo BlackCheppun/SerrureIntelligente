@@ -3,17 +3,29 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { darkTheme, lightTheme } from "../types/themes";
 
 
-export default function LockCard({ label, isrefresh }: { label: string, isrefresh?: boolean }) {
+export default function LockCard({ label, isrefresh }: { label: string, isrefresh?: string }) {
     const theme = useColorScheme() == 'dark' ? darkTheme : lightTheme;
+    let disp = false;
 
-    const background = theme.onBackground;
+
+    if (isrefresh != null) {
+        disp = true;
+    }
+
+    const backgroundColor = !isrefresh
+        ? theme.onBackground // Default to gray if isRefresh doesn't exist
+        : isrefresh == "open"
+            ? theme.green
+            : theme.red;
+
 
     return (
-        <View style={[styles.LockContainer, { borderColor: theme.fontcolor, backgroundColor: background }]} >
+        <View style={[styles.LockContainer, { borderColor: theme.fontcolor, backgroundColor: backgroundColor }]} >
             <Text style={[{ color: theme.fontcolor }, styles.Text]}>{label}</Text>
             {
-                isrefresh &&
-                <Icon name="reload" size={28} style={{ fontWeight: 800, color: theme.fontcolor }} />
+                disp && (
+                    < Icon name="reload" size={28} style={{ fontWeight: 800, color: theme.fontcolor }} />
+                )
             }
         </View>
     )
